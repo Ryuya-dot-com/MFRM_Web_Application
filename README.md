@@ -16,11 +16,7 @@ Many-Facet Rasch Model は、受験者・課題・評価者・評価観点など
 
 ![formula](https://latex.codecogs.com/svg.latex?\Pr(Y_{ijrc}\leq%20k)=\tau_k-(\theta_i-\delta_j-\rho_r-\kappa_c))
 
-\[
-\mathrm{logit}\, \Pr(Y_{i j r c} \le k) = \tau_k - (\theta_i - \delta_j - \rho_r - \kappa_c)
-\]
-
-のように表現します。ここで $Y_{i j r c}$ は受験者 $i$ が課題 $j$、評価者 $r$、観点 $c$ で得た評定、$\tau_k$ はカテゴリ境界（閾値）、$\theta_i$ は受験者能力、$\delta_j$ は課題難易度、$\rho_r$ は評価者の厳しさ、$\kappa_c$ は観点固有のハードルです。単一の順序ロジスティック回帰では固定効果で表す部分を、MFRM ではファセットごとのランダム効果として推定することで、ベイズ的な事後分布や信頼性指標を得る点が特徴です。
+のように表現します。ここで $Y_{i j r c}$ は受験者 $i$ が課題 $j$ 、評価者 $r$ 、観点 $c$ で得た評定、 $\tau_k$ はカテゴリ境界（閾値）、 $\theta_i$ は受験者能力、 $\delta_j$ は課題難易度、 $\rho_r$ は評価者の厳しさ、 $\kappa_c$ は観点固有のハードルです。単一の順序ロジスティック回帰では固定効果で表す部分を、MFRM ではファセットごとのランダム効果として推定することで、ベイズ的な事後分布や信頼性指標を得る点が特徴です。
 
 ## Overview
 - ペーストまたはファイルアップロードでデータを読み込み、UI 上で列マッピングとモデリング設定を実施
@@ -126,9 +122,7 @@ Many-Facet Rasch Model は、受験者・課題・評価者・評価観点など
 ### Link Function (リンク関数) とは？
 順序ロジスティック回帰では、あるカテゴリ以下になる確率をロジットやプロビットといった「リンク関数」で変換して直線的に扱います。例えば `Logit` を選ぶと、「カテゴリ $k$ 以下になる確率 $p$」を
 
-\[
-\mathrm{logit}(p) = \log\left(\frac{p}{1-p}\right)
-\]
+![formula](https://latex.codecogs.com/svg.latex?\mathrm{logit}(p)=\log\left(\tfrac{p}{1-p}\right))
 
 のように対数オッズへ変換し、受験者能力や課題難易度との線形関係で説明します。`Logit` は 0.5 までは緩やか、0 や 1 に近づくと急峻に変化する S 字カーブを描くため、序数データの扱いには一般的で、アプリの既定値になっています。
 
@@ -213,12 +207,24 @@ Many-Facet Rasch Model は、受験者・課題・評価者・評価観点など
 ## Interpreting Results: Reliability & Separation
 `Reliability & Separation` タブでは、各ファセットの測定精度をまとめた指標が表示されます。数値の意味と計算方法は次のとおりです（`ObsSD` などは `Mean` 列で代表値、`66%/95%` 列は事後区間です）。
 
-- **ObsSD (Observed SD)**: 推定されたパラメータ（例：受験者能力）の標準偏差。式は \(\text{ObsSD} = \sqrt{\text{VarLevel}}\)。値が大きいほど、そのファセット内での違いが大きいことを示します。例：受験者の ObsSD が 2.6 程度であれば、能力が高い人と低い人がバランス良く混在しており、テストが幅広い層をカバーしていると考えられます。逆に 0.4 程度しかない場合は、ほとんどの受験者が似た得点になっているサインです。
-- **RMSE (Root Mean Square Error)**: 事後平均からの誤差の二乗平均平方根。式は \(\text{RMSE} = \sqrt{\frac{1}{n}\sum (\text{Display} - \text{Mean})^2}\)。測定の“揺らぎ”であり、値が小さいほど精度が良いことを表します。例：評価者の RMSE が 0.7 程度なら、採点が平均から少しブレている程度、0.2 なら非常に安定、1.5 なら採点の揺れが大きいと判断できます。
-- **AdjSD (Adjusted SD)**: 測定誤差を差し引いた真の標準偏差。式は \(\text{AdjSD} = \sqrt{\max(\text{VarLevel} - \text{RMSE}^2, 0)}\)。ObsSD から RMSE を引いて残る「実力差」の部分です。例：受験者の ObsSD=2.6、RMSE=1.1 なら AdjSD ≈ 2.3 となり、大部分が実力差として説明されます。もし AdjSD がほぼ 0 なら、観測されたばらつきのほとんどが誤差であることを意味します。
-- **Reliability**: 信頼性係数（真の分散 / 観測分散）。式は \(\text{Reliability} = \text{AdjSD}^2 / \text{ObsSD}^2\)。0～1 の範囲で、0.8 以上なら測定が安定していると考えられます。例：受験者の信頼性が 0.83 であれば、受験者間の能力差の 83% は実際の差であり、残り 17% が測定誤差と解釈できます。観点の信頼性が 0.35 のように低い場合は、観点間のばらつきが誤差に近く、評価基準の再検討が必要です。
-- **Separation**: 真の標準偏差を RMSE で割ったもの。式は \(\text{Separation} = \text{AdjSD} / \text{RMSE}\)。2 以上なら良好、3 以上なら優れた弁別力です。たとえば Separation=2.0 なら、受験者を誤差込みで 2 グループ程度（高得点群と低得点群）に分けられる精度がある、と直感的に理解できます。課題の Separation が 1.2 と低い場合は、課題間の難易度差よりも誤差が大きいことを意味し、課題設定の見直しを検討します。
-- **Strata**: Separation を 0～∞ から 1～∞ の尺度に変換したもの。式は \(\text{Strata} = (4 \times \text{Separation} + 1) / 3\)。3 以上で「統計的に区別できるレベルが 3 つ以上ある」と解釈できます。例：評価者 Strata が 3.5 なら、厳しさのレベルが少なくとも 3 段階（甘め・標準・厳しめ）に分かれていると考えられます。
+- **ObsSD (Observed SD)**: 推定されたパラメータ（例：受験者能力）の標準偏差。
+式は ![formula](https://latex.codecogs.com/svg.latex?\text{ObsSD}=\sqrt{\text{VarLevel}}\))
+値が大きいほど、そのファセット内での違いが大きいことを示します。例：受験者の ObsSD が 2.6 程度であれば、能力が高い人と低い人がバランス良く混在しており、テストが幅広い層をカバーしていると考えられます。逆に 0.4 程度しかない場合は、ほとんどの受験者が似た得点になっているサインです。
+- **RMSE (Root Mean Square Error)**: 事後平均からの誤差の二乗平均平方根。
+式は ![formula](https://latex.codecogs.com/svg.latex?\text{RMSE}=\sqrt{\frac{1}{n}\sum(\text{Display}-\text{Mean})^2}\))
+測定の“揺らぎ”であり、値が小さいほど精度が良いことを表します。例：評価者の RMSE が 0.7 程度なら、採点が平均から少しブレている程度、0.2 なら非常に安定、1.5 なら採点の揺れが大きいと判断できます。
+- **AdjSD (Adjusted SD)**: 測定誤差を差し引いた真の標準偏差。
+式は ![formula](https://latex.codecogs.com/svg.latex?\text{AdjSD}=\sqrt{\max(\text{VarLevel}-\text{RMSE}^2,0)}\))
+ObsSD から RMSE を引いて残る「実力差」の部分です。例：受験者の ObsSD=2.6、RMSE=1.1 なら AdjSD ≈ 2.3 となり、大部分が実力差として説明されます。もし AdjSD がほぼ 0 なら、観測されたばらつきのほとんどが誤差であることを意味します。
+- **Reliability**: 信頼性係数（真の分散 / 観測分散）。
+式は ![formula](https://latex.codecogs.com/svg.latex?\text{Reliability}=\text{AdjSD}^2/\text{ObsSD}^2\))
+0～1 の範囲で、0.8 以上なら測定が安定していると考えられます。例：受験者の信頼性が 0.83 であれば、受験者間の能力差の 83% は実際の差であり、残り 17% が測定誤差と解釈できます。観点の信頼性が 0.35 のように低い場合は、観点間のばらつきが誤差に近く、評価基準の再検討が必要です。
+- **Separation**: 真の標準偏差を RMSE で割ったもの。
+式は ![formula](https://latex.codecogs.com/svg.latex?\text{Separation}=\text{AdjSD}/\text{RMSE}\))
+2 以上なら良好、3 以上なら優れた弁別力です。たとえば Separation=2.0 なら、受験者を誤差込みで 2 グループ程度（高得点群と低得点群）に分けられる精度がある、と直感的に理解できます。課題の Separation が 1.2 と低い場合は、課題間の難易度差よりも誤差が大きいことを意味し、課題設定の見直しを検討します。
+- **Strata**: Separation を 0～∞ から 1～∞ の尺度に変換したもの。
+式は ![formula](https://latex.codecogs.com/svg.latex?\text{Strata}=(4\times\text{Separation}+1)/3\))
+3 以上で「統計的に区別できるレベルが 3 つ以上ある」と解釈できます。例：評価者 Strata が 3.5 なら、厳しさのレベルが少なくとも 3 段階（甘め・標準・厳しめ）に分かれていると考えられます。
 
 これらの指標を並べて見ると、「受験者の能力差は十分大きいが、課題の難易度差は小さい」「評価者は厳しさにばらつきがある」といった診断がしやすくなります。66%・95% 区間が閾値（Reliability 0.8 など）を跨いでいる場合は、確信度が十分でない点に注意しつつ、データやルーブリックの改善に活かしてください。
 
@@ -243,19 +249,28 @@ Many-Facet Rasch Model は、受験者・課題・評価者・評価観点など
 
 数値が 1 に近ければ予測と実測がよく一致しており、`InfitMSQ` や `OutfitMSQ` が 1.5 を超えると「Underfit（ばらつきが大きすぎ）」、0.5 未満だと「Overfit（変動が小さすぎ）」とみなします。Overfit はデータが“出来すぎ”で、新しいデータでは再現できない可能性を示唆します。Underfit は予測に収まりきらないほど不規則な挙動があるサインで、採点やデータ入力の見直しが必要です。
 
-計算は残差 \(r_i = y_i - \hat{y}_i\) を基礎にしており、
+計算は残差 ![formula](https://latex.codecogs.com/svg.latex?r_i=y_i-\hat{y}_i) を基礎にしており、
 
-\[
-\text{InfitMSQ} = \frac{\sum w_i r_i^2}{\sum w_i}, \qquad \text{OutfitMSQ} = \frac{1}{n} \sum r_i^2
-\]
+![formula](https://latex.codecogs.com/svg.latex?\text{InfitMSQ}=\frac{\sum%20w_i%20r_i^2}{\sum%20w_i}),  
+![formula](https://latex.codecogs.com/svg.latex?\text{OutfitMSQ}=\frac{1}{n}\sum%20r_i^2)
 
-のように求めます（\(w_i\) はカテゴリーの情報量、\(n\) は観測数）。これらを正規化した Z 値は、`app.R` 内の
+のように求めます（![formula](https://latex.codecogs.com/svg.latex?w_i) はカテゴリーの情報量、![formula](https://latex.codecogs.com/svg.latex?n) は観測数）。  
 
-\[
-Z = \frac{MSQ^{1/3} - \bigl(1 - \tfrac{2}{9df}\bigr)}{\sqrt{\tfrac{2}{9df}}}
-\]
+これらを正規化した Z 値は、`app.R` 内の
 
-により算出されます（\(df\) は自由度）。平均残差は \(\text{MeanResid} = \tfrac{1}{n}\sum r_i\)、標準偏差は \(\text{SdResid} = \sqrt{\tfrac{1}{n-1}\sum (r_i - \text{MeanResid})^2}\) です。`MaxAbsZ` は Infit・Outfit Z の最大絶対値で、最も外れた水準を素早く特定できます。
+![formula](https://latex.codecogs.com/svg.latex?Z=\frac{MSQ^{1/3}-\bigl(1-\tfrac{2}{9df}\bigr)}{\sqrt{\tfrac{2}{9df}}})
+
+により算出されます（![formula](https://latex.codecogs.com/svg.latex?df) は自由度）。  
+
+平均残差は  
+
+![formula](https://latex.codecogs.com/svg.latex?\text{MeanResid}=\tfrac{1}{n}\sum%20r_i),  
+
+標準偏差は  
+
+![formula](https://latex.codecogs.com/svg.latex?\text{SdResid}=\sqrt{\tfrac{1}{n-1}\sum(r_i-\text{MeanResid})^2})  
+
+です。`MaxAbsZ` は Infit・Outfit Z の最大絶対値で、最も外れた水準を素早く特定できます。
 
 続いて、同じタブ内には平均二乗統計と Z 統計をまとめた散布図、およびテーブル形式の詳細も用意されています。
 
