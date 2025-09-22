@@ -208,22 +208,34 @@ Many-Facet Rasch Model は、受験者・課題・評価者・評価観点など
 `Reliability & Separation` タブでは、各ファセットの測定精度をまとめた指標が表示されます。数値の意味と計算方法は次のとおりです（`ObsSD` などは `Mean` 列で代表値、`66%/95%` 列は事後区間です）。
 
 - **ObsSD (Observed SD)**: 推定されたパラメータ（例：受験者能力）の標準偏差。
+
 式は ![formula](https://latex.codecogs.com/svg.latex?\text{ObsSD}=\sqrt{\text{VarLevel}}\))
+
 値が大きいほど、そのファセット内での違いが大きいことを示します。例：受験者の ObsSD が 2.6 程度であれば、能力が高い人と低い人がバランス良く混在しており、テストが幅広い層をカバーしていると考えられます。逆に 0.4 程度しかない場合は、ほとんどの受験者が似た得点になっているサインです。
 - **RMSE (Root Mean Square Error)**: 事後平均からの誤差の二乗平均平方根。
+
 式は ![formula](https://latex.codecogs.com/svg.latex?\text{RMSE}=\sqrt{\frac{1}{n}\sum(\text{Display}-\text{Mean})^2}\))
+
 測定の“揺らぎ”であり、値が小さいほど精度が良いことを表します。例：評価者の RMSE が 0.7 程度なら、採点が平均から少しブレている程度、0.2 なら非常に安定、1.5 なら採点の揺れが大きいと判断できます。
 - **AdjSD (Adjusted SD)**: 測定誤差を差し引いた真の標準偏差。
+
 式は ![formula](https://latex.codecogs.com/svg.latex?\text{AdjSD}=\sqrt{\max(\text{VarLevel}-\text{RMSE}^2,0)}\))
+
 ObsSD から RMSE を引いて残る「実力差」の部分です。例：受験者の ObsSD=2.6、RMSE=1.1 なら AdjSD ≈ 2.3 となり、大部分が実力差として説明されます。もし AdjSD がほぼ 0 なら、観測されたばらつきのほとんどが誤差であることを意味します。
 - **Reliability**: 信頼性係数（真の分散 / 観測分散）。
+
 式は ![formula](https://latex.codecogs.com/svg.latex?\text{Reliability}=\text{AdjSD}^2/\text{ObsSD}^2\))
+
 0～1 の範囲で、0.8 以上なら測定が安定していると考えられます。例：受験者の信頼性が 0.83 であれば、受験者間の能力差の 83% は実際の差であり、残り 17% が測定誤差と解釈できます。観点の信頼性が 0.35 のように低い場合は、観点間のばらつきが誤差に近く、評価基準の再検討が必要です。
 - **Separation**: 真の標準偏差を RMSE で割ったもの。
+
 式は ![formula](https://latex.codecogs.com/svg.latex?\text{Separation}=\text{AdjSD}/\text{RMSE}\))
+
 2 以上なら良好、3 以上なら優れた弁別力です。たとえば Separation=2.0 なら、受験者を誤差込みで 2 グループ程度（高得点群と低得点群）に分けられる精度がある、と直感的に理解できます。課題の Separation が 1.2 と低い場合は、課題間の難易度差よりも誤差が大きいことを意味し、課題設定の見直しを検討します。
 - **Strata**: Separation を 0～∞ から 1～∞ の尺度に変換したもの。
+
 式は ![formula](https://latex.codecogs.com/svg.latex?\text{Strata}=(4\times\text{Separation}+1)/3\))
+
 3 以上で「統計的に区別できるレベルが 3 つ以上ある」と解釈できます。例：評価者 Strata が 3.5 なら、厳しさのレベルが少なくとも 3 段階（甘め・標準・厳しめ）に分かれていると考えられます。
 
 これらの指標を並べて見ると、「受験者の能力差は十分大きいが、課題の難易度差は小さい」「評価者は厳しさにばらつきがある」といった診断がしやすくなります。66%・95% 区間が閾値（Reliability 0.8 など）を跨いでいる場合は、確信度が十分でない点に注意しつつ、データやルーブリックの改善に活かしてください。
