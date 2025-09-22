@@ -14,6 +14,8 @@ Many-Facet Rasch Model は、受験者・課題・評価者・評価観点など
 
 背景知識として、MFRM は順序ロジスティック回帰（累積ロジットモデル）を多ファセット化したものと捉えられます。本アプリが採用している累積リンク混合モデル（CLMM）は、例えばカテゴリ $k$ 以下を観測する条件付き確率を
 
+![formula](https://latex.codecogs.com/svg.latex?\Pr(Y_{ijrc}\leq%20k)=\tau_k-(\theta_i-\delta_j-\rho_r-\kappa_c))
+
 \[
 \mathrm{logit}\, \Pr(Y_{i j r c} \le k) = \tau_k - (\theta_i - \delta_j - \rho_r - \kappa_c)
 \]
